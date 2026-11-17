@@ -1,0 +1,74 @@
+# ---- Unity: generated folders (rebuilt by Unity on every machine) ----
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+*.csproj
+*.sln
+*.slnx
+*.slnx.private*
+*.suo
+*.user
+*.pidb
+*.booproj
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.vs/
+.vscode/
+.idea/
+*.apk
+*.aab
+*.unitypackage
+crashlytics-buildid.txt
+
+# ---- Unity Version Control (Plastic) keeps its own data ----
+.plastic/
+.dist/
+ignore.conf
+
+# ---- Asset Store packs: their licence doesn't allow re-publishing them in a public repo. ----
+# ---- Teammates import them from the Asset Store (see README > Opening the project).      ----
+/Assets/Alstra Infinite/
+/Assets/Alstra Infinite.meta
+/Assets/Blink/
+/Assets/Blink.meta
+/Assets/BrokenVector/
+/Assets/BrokenVector.meta
+/Assets/Dark Fantasy Dungeon DEMO/
+/Assets/Dark Fantasy Dungeon DEMO.meta
+/Assets/DungeonCharacters/
+/Assets/DungeonCharacters.meta
+/Assets/Feyloom/
+/Assets/Feyloom.meta
+/Assets/LowPolyMedievalPropsLite/
+/Assets/LowPolyMedievalPropsLite.meta
+/Assets/Monster Pack/
+/Assets/Monster Pack.meta
+/Assets/PolyRonin/
+/Assets/PolyRonin.meta
+/Assets/Polytope Studio/
+/Assets/Polytope Studio.meta
+/Assets/PurePoly/
+/Assets/PurePoly.meta
+/Assets/SazenGames/
+/Assets/SazenGames.meta
+/Assets/Stylized NPC - Peasant Nolant/
+/Assets/Stylized NPC - Peasant Nolant.meta
+/Assets/Toon_RTS/
+/Assets/Toon_RTS.meta
+/Assets/Toon_RTS_demo/
+/Assets/Toon_RTS_demo.meta
+/Assets/UnityTechnologies/
+/Assets/UnityTechnologies.meta
+
+# ---- OS clutter ----
+.DS_Store
+Thumbs.db
+desktop.ini

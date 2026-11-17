@@ -1,0 +1,624 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9ea74949fe53174cb3e6f915f972e67, type: 3}
+  m_Name: FVLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::FracturedVow.FVLibrary
+  heroes:
+  - name: Wanderer
+    prefab: {fileID: 1782702501690864755, guid: 60770bdb4dc667c45bea53db0339dc05, type: 3}
+    controller: {fileID: 9100000, guid: 22055b846ddb8ff45ba032f8fd962e14, type: 2}
+    stomp: 0
+  - name: Sellsword
+    prefab: {fileID: 1846530523549185644, guid: 23f907c94ad92894495c02b43a563c6f, type: 3}
+    controller: {fileID: 9100000, guid: 22055b846ddb8ff45ba032f8fd962e14, type: 2}
+    stomp: 0
+  - name: Shieldmaiden
+    prefab: {fileID: 6339786312913494083, guid: 435d261c1fe73ba46883b819e578219d, type: 3}
+    controller: {fileID: 9100000, guid: 22055b846ddb8ff45ba032f8fd962e14, type: 2}
+    stomp: 0
+  enemyMelee:
+  - name: Risen Skeleton
+    prefab: {fileID: 1571042049591659991, guid: 61b3e3801d56a3f429556c96ea2f07d6, type: 3}
+    controller: {fileID: 9100000, guid: 670faab66500e7f428e85da5a37ba035, type: 2}
+    stomp: 0
+  - name: Crypt Skeleton
+    prefab: {fileID: 1035530980023908630, guid: c0c0c0db812bfcc48834306aa6695c0b, type: 3}
+    controller: {fileID: 9100000, guid: b50c11900cd424742a706a742d860b8c, type: 2}
+    stomp: 0
+  - name: Skeleton Warrior
+    prefab: {fileID: 891621432048349067, guid: 2df194a131d25834e98b7629a59e90bb, type: 3}
+    controller: {fileID: 0}
+    stomp: 1
+  - name: Bone Thrall
+    prefab: {fileID: 6954042555658129364, guid: eb9160ea2847973428a1d5111f42ef0d, type: 3}
+    controller: {fileID: 0}
+    stomp: 1
+  enemyRanged:
+  - name: Necromancer
+    prefab: {fileID: 4805236750560792838, guid: 2e8d4d8b90cb4e55a2de54b985b53a2c, type: 3}
+    controller: {fileID: 9100000, guid: ff40a41e9ccdb304dbd8a2cb0b09da8e, type: 2}
+    stomp: 0
+  - name: Skeleton Mage
+    prefab: {fileID: 4663875170468816224, guid: 30550f39514b5a54cb0ede600c7bc045, type: 3}
+    controller: {fileID: 0}
+    stomp: 1
+  enemyBrute:
+  - name: Orc Brute
+    prefab: {fileID: 7556922308523821929, guid: ad205aeff66cd33429131f3708ba83e2, type: 3}
+    controller: {fileID: 0}
+    stomp: 1
+  - name: Minotaur
+    prefab: {fileID: 8209696158043614227, guid: 3ca64ae57a3a8ff42a0a49c231f28f6f, type: 3}
+    controller: {fileID: 0}
+    stomp: 1
+  - name: Werewolf
+    prefab: {fileID: 1116439223808960003, guid: 978751dccab67ed428e7267807229001, type: 3}
+    controller: {fileID: 0}
+    stomp: 1
+  items:
+  - id: w_seax_knife
+    name: Seax Knife
+    kind: 2
+    damage: 0.13
+    armor: 0
+    health: 0
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 2579547315633413871, guid: ca65deb719f7b1142823272311535f82, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_pirate_s_hook
+    name: Pirate's Hook
+    kind: 2
+    damage: 0.13
+    armor: 0
+    health: 0
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 58047443111175304, guid: e3fa80daecf01a54fa8a095186dc70b0, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_iron_mace
+    name: Iron Mace
+    kind: 2
+    damage: 0.13
+    armor: 0
+    health: 0
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 1763654846930462, guid: 924b22173eb9529449e1eb9afb398a0c, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_orcish_hatchet
+    name: Orcish Hatchet
+    kind: 2
+    damage: 0.13
+    armor: 0
+    health: 0
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 6410223757057931820, guid: af7ca66322bc99e43a7614d057663631, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_viking_spear
+    name: Viking Spear
+    kind: 2
+    damage: 0.13
+    armor: 0
+    health: 0
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 7478660572134806275, guid: f1395686f4ceee24eac6819ac1c44b2a, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_rogue_s_dagger
+    name: Rogue's Dagger
+    kind: 2
+    damage: 0.13
+    armor: 0
+    health: 0
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 323333351367080586, guid: 87b744073f89d274ea9986018a77d4e4, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_corsair_cutlass
+    name: Corsair Cutlass
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 4238622659078634408, guid: c5d45140bc5de7d4c82200fc12e14f92, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_captain_s_cutlass
+    name: Captain's Cutlass
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 5157622003901024539, guid: e00a1386d35f084498ba31b8cd1d94c5, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_knight_s_arming_sword
+    name: Knight's Arming Sword
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 1085232497613288, guid: c1e06da14a443b14c8799bfbd61a258f, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_bearded_axe
+    name: Bearded Axe
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 7868139210088634614, guid: bc5188a8a29d52544a3cf2677305eb70, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_woodsman_s_axe
+    name: Woodsman's Axe
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 381841188022926127, guid: 2fb5024f5f565704c99523d552086f65, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_grave_falchion
+    name: Grave Falchion
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 8055904020073888615, guid: 13251fa65556cef4baa8a6aa88b9203f, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_hunter_s_spear
+    name: Hunter's Spear
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 4115183322126277114, guid: 5b461363c3ad570408bfe9eb2a74ee40, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_war_axe
+    name: War Axe
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 1172367450721278, guid: fac5edcf0d65c95498d135bfb49e79cd, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_ulfberht_sword
+    name: Ulfberht Sword
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 2049977056430061286, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_templar_blade
+    name: Templar Blade
+    kind: 2
+    damage: 0.24
+    armor: 0
+    health: 0
+    mana: 0
+    price: 320
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 5648164778633679083, guid: b99eeca4b92b0b2408bdea5f80af2b65, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_jarl_s_greataxe
+    name: Jarl's Greataxe
+    kind: 2
+    damage: 0.35
+    armor: 0
+    health: 0
+    mana: 0
+    price: 450
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 8736874203468240037, guid: aef6ca51e9218e94caa1de0232286801, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_oathbound_longsword
+    name: Oathbound Longsword
+    kind: 2
+    damage: 0.35
+    armor: 0
+    health: 0
+    mana: 0
+    price: 450
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 1780149463779478, guid: 4c2221f1769225e4a937583264f35685, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_vowbreaker_greatsword
+    name: Vowbreaker Greatsword
+    kind: 2
+    damage: 0.35
+    armor: 0
+    health: 0
+    mana: 0
+    price: 450
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 8133399767090564659, guid: fa7576413fbf339459d948aa3d3ebbe5, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_warden_s_maul
+    name: Warden's Maul
+    kind: 2
+    damage: 0.35
+    armor: 0
+    health: 0
+    mana: 0
+    price: 450
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 2939461966237491692, guid: 6dc5bbadc807ebe4d926b32d4cee4f6f, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_executioner_s_axe
+    name: Executioner's Axe
+    kind: 2
+    damage: 0.35
+    armor: 0
+    health: 0
+    mana: 0
+    price: 450
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 8047764633477264512, guid: a250c778e48c73742ae531b8c9a9bd17, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: w_reaper_s_scythe
+    name: Reaper's Scythe
+    kind: 2
+    damage: 0.35
+    armor: 0
+    health: 0
+    mana: 0
+    price: 450
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 4926703055965546900, guid: bc956f77213138048b30d54ab626e70a, type: 3}
+    color: {r: 0.78, g: 0.78, b: 0.82, a: 1}
+  - id: t_viking_roundshield
+    name: Viking Roundshield
+    kind: 4
+    damage: 0
+    armor: 0.06
+    health: 0
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 3277367598667684027, guid: 959e32d7f21efad48bc7bb41cadaa0a2, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: t_painted_roundshield
+    name: Painted Roundshield
+    kind: 4
+    damage: 0
+    armor: 0.09
+    health: 10
+    mana: 0
+    price: 310
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 7197388840031512962, guid: 9705ba7ee0512a84dba385e96995d016, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: t_heater_shield
+    name: Heater Shield
+    kind: 4
+    damage: 0
+    armor: 0.1
+    health: 10
+    mana: 0
+    price: 310
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 1693301642216638, guid: f83619c11564f3f4c8970d5d90cfd7b2, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: t_kite_shield
+    name: Kite Shield
+    kind: 4
+    damage: 0
+    armor: 0.14
+    health: 15
+    mana: 0
+    price: 430
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 1304403949013540, guid: ab7f7deb1b7afd74aa44ad9258fe798c, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: t_horned_helm
+    name: Horned Helm
+    kind: 4
+    damage: 0
+    armor: 0.04
+    health: 25
+    mana: 0
+    price: 310
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 6361302357530836724, guid: 45645536a02652a40b09094d2c3256dd, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: t_necromancer_s_scepter
+    name: Necromancer's Scepter
+    kind: 4
+    damage: 0
+    armor: 0
+    health: 0
+    mana: 35
+    price: 310
+    tier: 2
+    spell: 0
+    outfit: 
+    model: {fileID: 4761580129063501969, guid: cff5dffe00fae3646b02cf6f01cb6514, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: t_grimoire_of_ash
+    name: Grimoire of Ash
+    kind: 4
+    damage: 0
+    armor: 0
+    health: 0
+    mana: 50
+    price: 430
+    tier: 3
+    spell: 0
+    outfit: 
+    model: {fileID: 8512130858803666336, guid: 0c90db8fea3862442b559c97aca37ba7, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: t_vial_of_vigor
+    name: Vial of Vigor
+    kind: 4
+    damage: 0
+    armor: 0
+    health: 20
+    mana: 0
+    price: 190
+    tier: 1
+    spell: 0
+    outfit: 
+    model: {fileID: 3771452789413926460, guid: 589b0e358669b3d48a16ab26d6f3e8a8, type: 3}
+    color: {r: 0.9, g: 0.75, b: 0.45, a: 1}
+  - id: a_traveler_s_garb
+    name: Traveler's Garb
+    kind: 3
+    damage: 0
+    armor: 0.04
+    health: 0
+    mana: 0
+    price: 200
+    tier: 1
+    spell: 0
+    outfit: cloth_00
+    model: {fileID: 2813152266267462857, guid: f5281e2677a8f104facf37eb878ceb30, type: 3}
+    color: {r: 0.65, g: 0.6, b: 0.55, a: 1}
+  - id: a_ranger_s_mail
+    name: Ranger's Mail
+    kind: 3
+    damage: 0
+    armor: 0.12
+    health: 10
+    mana: 0
+    price: 340
+    tier: 2
+    spell: 0
+    outfit: 01_A
+    model: {fileID: 3083090716982041964, guid: e66d4cc425023c246b63c04357f51885, type: 3}
+    color: {r: 0.65, g: 0.6, b: 0.55, a: 1}
+  - id: a_knight_s_plate
+    name: Knight's Plate
+    kind: 3
+    damage: 0
+    armor: 0.22
+    health: 25
+    mana: 0
+    price: 480
+    tier: 3
+    spell: 0
+    outfit: 05_C
+    model: {fileID: 6127890282991699156, guid: 79225588adeca7b47b72298ca489684f, type: 3}
+    color: {r: 0.65, g: 0.6, b: 0.55, a: 1}
+  props:
+  - category: barrel
+    prefab: {fileID: 2317576605586580694, guid: 5adaedd4c0081614da171fecdf6bbd37, type: 3}
+  - category: barrel
+    prefab: {fileID: 5754540700685389711, guid: d4fdeae2fb6f5d245b9a6116920d503e, type: 3}
+  - category: barrel
+    prefab: {fileID: 4369247199797357114, guid: 591bed4d8c69b824c81e7261d794d9f5, type: 3}
+  - category: barrel
+    prefab: {fileID: 2465079734990110219, guid: af0251662ce5880478fc4015a2c7df13, type: 3}
+  - category: crate
+    prefab: {fileID: 573573865698385911, guid: e0b2792fd3ecf274fa1b9172d6962562, type: 3}
+  - category: crate
+    prefab: {fileID: 3392177451024100706, guid: e41d746696116cc41881f2c82c8aa7c4, type: 3}
+  - category: crate
+    prefab: {fileID: 959482302792725863, guid: 7c87c77e24344db44af20c4872109381, type: 3}
+  - category: table
+    prefab: {fileID: 4179086729700039233, guid: ce285a7430946e24ca0a9218777a7805, type: 3}
+  - category: table
+    prefab: {fileID: 490335350711660523, guid: 0a7f51b5f4ba6294a889f661114da0d3, type: 3}
+  - category: table
+    prefab: {fileID: 1293891031151802728, guid: 06b9d15b7d33e854cb23fe58a33238aa, type: 3}
+  - category: table
+    prefab: {fileID: 5039871010804384918, guid: fb166709a40092c4d8429c226715102f, type: 3}
+  - category: chair
+    prefab: {fileID: 357478072314647335, guid: a8acfdda1f8f6064bbf4e2fe34b27e67, type: 3}
+  - category: chair
+    prefab: {fileID: 8528820825029984946, guid: a05d4d94c1106004abcd87df4b8f1777, type: 3}
+  - category: chair
+    prefab: {fileID: 1149450743610432623, guid: dc02f77b0506f764c9d22c61c681c4af, type: 3}
+  - category: chair
+    prefab: {fileID: 9190588765617413436, guid: ad2e0cfa2e8733c46ae66652ae0714f5, type: 3}
+  - category: candle
+    prefab: {fileID: 3640300687198475216, guid: 23e2a639ca3c8bb43ba7ae9988ecc0e4, type: 3}
+  - category: candle
+    prefab: {fileID: 8266949716707160795, guid: 34534f9a2d6df1c4f8dee201f8d50aaa, type: 3}
+  - category: candle
+    prefab: {fileID: 3918751411058678636, guid: bf7a7fc00791eb945a5412768a68fffc, type: 3}
+  - category: candle
+    prefab: {fileID: 632320221727478198, guid: 74f1aa9e584aa4842aecf049e25f5339, type: 3}
+  - category: candle
+    prefab: {fileID: 4236613998813808564, guid: f4201c8f49deb8844a1d1d79b62d845d, type: 3}
+  - category: candle
+    prefab: {fileID: 5539110537765399516, guid: 27a9ea57e6466914380d0e2b7985388d, type: 3}
+  - category: shelf
+    prefab: {fileID: 7432622557476056704, guid: cb9bc6b96d830b64293c9fdff99b1743, type: 3}
+  - category: shelf
+    prefab: {fileID: 6822879176331142234, guid: 559f839e0f294cf499731ff6070352ac, type: 3}
+  - category: bones
+    prefab: {fileID: 8387812288189420140, guid: a13b8883072533940b5bcfde3cbc03a0, type: 3}
+  - category: bones
+    prefab: {fileID: 4735221276784898094, guid: 5c58fb2d7ad52444f85fc37bcad1f0a5, type: 3}
+  - category: pot
+    prefab: {fileID: 3629098907630432920, guid: afc3fedc78427f04097996d062288c66, type: 3}
+  - category: pot
+    prefab: {fileID: 5575272835648200140, guid: 741afadbc8ee8d6498f2ac5ed155cefb, type: 3}
+  - category: pot
+    prefab: {fileID: 1345068425825028488, guid: 8b6836c79d4a1cc40bb604b92317b2b0, type: 3}
+  - category: pot
+    prefab: {fileID: 6275043120392070020, guid: f3fb1271ede9bf8469d8b99637b77b42, type: 3}
+  - category: pot
+    prefab: {fileID: 6721092324546943810, guid: 6eee7306fe377634f9645a176df43265, type: 3}
+  - category: pot
+    prefab: {fileID: 5905313355104841211, guid: 9ebd52a346641ab469fe9220a7c27ff8, type: 3}
+  - category: pot
+    prefab: {fileID: 1359375955376506586, guid: d6ade90f396755c42b43f8006323ec2c, type: 3}
+  - category: pot
+    prefab: {fileID: 2350066920135543818, guid: f5709a3035aa0ca4d94745aaf44038fd, type: 3}
+  - category: banner
+    prefab: {fileID: 216915012680525562, guid: ad4bcbbca7d5fde4cbaa62e8f9296dd9, type: 3}
+  - category: sack
+    prefab: {fileID: 5200681163900939743, guid: 6d74876d99d459743af39429f3ef69b5, type: 3}
+  - category: sack
+    prefab: {fileID: 75310195703394631, guid: a178e3ddd4a467d4090e2b4a7a5e394f, type: 3}
+  - category: rack
+    prefab: {fileID: 8669240701490058663, guid: 797162f1e2611d14bac618083727de40, type: 3}
+  - category: rack
+    prefab: {fileID: 5895583696832419094, guid: 33b88a355dbcf1249aeafebe7d0f5879, type: 3}
+  - category: misc
+    prefab: {fileID: 5981562312196924896, guid: 9219eeec429c86b459f29c67fd3e5e05, type: 3}
+  - category: misc
+    prefab: {fileID: 5634942047087724044, guid: 2e12945ebe1b72244a54adef7e7dc627, type: 3}
+  - category: misc
+    prefab: {fileID: 1604264725142624628, guid: ab52575a7bb2b244a9dd104afe101920, type: 3}
+  - category: misc
+    prefab: {fileID: 7202219641934275637, guid: e699edbdf5545a647888825a14921b7d, type: 3}
+  - category: misc
+    prefab: {fileID: 1745756610997371530, guid: 0d858551c205152499f976761ecef4fb, type: 3}
+  - category: misc
+    prefab: {fileID: 6098996794725213001, guid: 6353832c19eb9674b8143b16ab17c820, type: 3}
+  - category: misc
+    prefab: {fileID: 9218377935294861655, guid: 1e711044cbc639d44aa004669771969e, type: 3}
+  - category: misc
+    prefab: {fileID: 5786272363911959125, guid: ac1fd1afdb0602f428b3d53dcc62d278, type: 3}
+  arenaProps: []
+  chest: {fileID: 8929589423702217963, guid: e30cba1a921baf34084ac60b89ad0979, type: 3}
+  bigChest: {fileID: 8929589423702217963, guid: 944bff624466e4242a3377fba75ddaf3, type: 3}
+  coin: {fileID: 4796012721986681278, guid: 503cf83fd490b1640bbc9aea8a7ded93, type: 3}
+  boat: {fileID: 2670057908315808390, guid: ea0644fb9a08d5044b51e607919087f5, type: 3}
+  merchant:
+    name: Nolant the Peddler
+    prefab: {fileID: 2916486913691104272, guid: 3c0b66c1fb55cd34994e034186a852c1, type: 3}
+    controller: {fileID: 9100000, guid: fecf6d756e0aaae41ada7c746eed59b9, type: 2}
+    stomp: 0
+  companion:
+    name: Sellsword
+    prefab: {fileID: 1846530523549185644, guid: 23f907c94ad92894495c02b43a563c6f, type: 3}
+    controller: {fileID: 9100000, guid: 22055b846ddb8ff45ba032f8fd962e14, type: 2}
+    stomp: 0
+  torchModel: {fileID: 7586093321967142111, guid: 4b437f1c2454a2c409b1b7f35e69d661, type: 3}
+  chandelier: {fileID: 1821300323071963912, guid: 2b5f6b76f1ed47f4f8bc90c9aff3184b, type: 3}
+  throne: {fileID: 1385233971182700358, guid: 760c802c9bcad6e4c98ab4909f7e92da, type: 3}
+  fireplace: {fileID: 2922107563030212518, guid: 55320ad6284175349b1008aaf7238c7a, type: 3}
+  carpet: {fileID: 9218377935294861655, guid: 1e711044cbc639d44aa004669771969e, type: 3}
+  hitFlesh: {fileID: 1096893136476370, guid: 24b82347924701148a13c746edfb6b22, type: 3}
+  hitMetal: {fileID: 1892351807075712, guid: 44be68b4fc4366142a9cd1ae1f761ea4, type: 3}
+  torchFlame: {fileID: 1972207730512856, guid: ea4fb55d0227e604386f44f905cfe7c0, type: 3}
+  groundFog: {fileID: 1269120730060968, guid: 1a365141225c22e49a7bb976869b22a8, type: 3}
+  fireflies: {fileID: 1775406099119076, guid: 379785de5e39005469c875710d3cc5a7, type: 3}
+  respawn: {fileID: 4708830163711251094, guid: c1cd05c496063794c9abd1f0b0354ce6, type: 3}
+  candles: {fileID: 1529859801056418, guid: 86f883933a872f542994368197c83b5b, type: 3}
+  fireTrail: {fileID: 1722250247140862, guid: ef134ce1a2a98d94fb68c860d9c736c6, type: 3}
+  fireBolt: {fileID: 1947871717301538, guid: a990e3ac1318b834488c784d851f42a9, type: 3}
+  fireImpact: {fileID: 1828176872806910, guid: 64891a0eb28db934898420d80ca07cb3, type: 3}
+  frostBolt: {fileID: 0}
+  frostImpact: {fileID: 1820680284854294, guid: 1a1c02facd51d87458dcaa3a761e2c03, type: 3}
+  castFlash: {fileID: 0}
+  wallBurst: {fileID: 1314945738539566, guid: 32c9fd11a72259d45aa26ae41c34c5aa, type: 3}
+  splash: {fileID: 1722726733478836, guid: c1c88308ebb5d2541a282905b854ee4c, type: 3}

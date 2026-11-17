@@ -1,0 +1,62 @@
+# FRACTURED VOW
+
+## DEVELOPED BY
+Your Name
+Your Name
+Your Name
+Your Name
+
+## GAME DESIGN
+Your Name
+
+## PROGRAMMING
+Your Name
+
+## LEVEL DESIGN
+Your Name
+
+## ART DIRECTION
+Your Name
+
+## STORY AND WRITING
+Your Name
+
+## AUDIO
+Original sound effects and music
+
+## QUALITY ASSURANCE
+Your Name
+
+## CHARACTERS
+Low Poly Modular Armors  -  Polytope Studio
+Free Low Poly Human RPG Character  -  Blink
+Stylized NPC: Peasant Nolant  -  Winged Boots Studio
+Toon RTS Units  -  Polygon Blacksmith
+Skeleton Necromancer  -  Feyloom
+Stylized Low Poly Skeleton  -  SazenGames
+Low Poly Monster Character Pack
+Dungeon Skeletons
+
+## WEAPONS
+Low Poly Viking Warrior Weapons  -  PolyRonin
+Low Poly Caribbean Pirate Weapons  -  PolyRonin
+Free Low Poly Fantasy RPG Weapons  -  PurePoly
+Low Poly Weapons  -  Polytope Studio
+
+## ENVIRONMENTS AND PROPS
+Ultimate Low Poly Dungeon  -  BrokenVector
+Low Poly Simple Medieval Props
+Dark Fantasy Dungeon
+Stylized Boats  -  Alstra Infinite
+
+## VISUAL EFFECTS
+Particle Pack  -  Unity Technologies
+
+## ENGINE
+Made with Unity
+Universal Render Pipeline
+
+## SPECIAL THANKS
+Everyone who played, broke and fixed it along the way.
+
+# THANK YOU FOR PLAYING

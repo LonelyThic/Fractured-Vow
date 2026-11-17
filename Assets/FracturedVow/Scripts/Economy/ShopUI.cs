@@ -1,0 +1,141 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace FracturedVow
+{
+    /// <summary>The merchant's window: BUY (gold for gear, tomes, flasks) and SELL (bag items for 40% of their price).</summary>
+    public class ShopUI : MonoBehaviour
+    {
+        public static bool IsOpen { get; private set; }
+        static ShopUI inst;
+
+        ShopNPC shop;
+        GameObject root;
+        RectTransform page;
+        bool selling;
+        int openFrame;
+
+        public static void Open(ShopNPC npc)
+        {
+            if (inst == null) inst = new GameObject("Shop UI").AddComponent<ShopUI>();
+            inst.Show(npc);
+        }
+
+        void Awake()
+        {
+            UIKit.EnsureEventSystem();
+            var canvas = UIKit.Canvas("Shop Canvas", 95, transform);
+            root = UIKit.Box(canvas, "Shop", new Color(0f, 0f, 0f, 0.7f)).gameObject;
+            UIKit.Stretch((RectTransform)root.transform);
+            root.SetActive(false);
+        }
+
+        void OnDestroy() { if (IsOpen) { IsOpen = false; Time.timeScale = 1f; } if (inst == this) inst = null; }
+
+        void Show(ShopNPC npc)
+        {
+            shop = npc;
+            if (npc != null && npc.stock.Count == 0) npc.Restock();
+            selling = false;
+            openFrame = Time.frameCount;
+            IsOpen = true;
+            root.SetActive(true);
+            Time.timeScale = 0f;
+            PlayerInputHandler.SetCursorLocked(false);
+            GameAudio.PlayUI("pickup_gear", 0.5f);
+            Rebuild();
+        }
+
+        void Close()
+        {
+            IsOpen = false;
+            UIFocus.LastClosedFrame = Time.frameCount;
+            root.SetActive(false);
+            Time.timeScale = 1f;
+            PlayerInputHandler.SetCursorLocked(true);
+        }
+
+        void Update()
+        {
+            if (IsOpen && Time.frameCount > openFrame && (UIKit.KeyDown("escape") || InputBindings.Pressed(GameAction.Interact))) Close();
+        }
+
+        static void Tint(Button b, Color c) { var cb = b.colors; cb.normalColor = c; cb.selectedColor = c; b.colors = cb; }
+
+        Text Txt(string s, int size, Color c, TextAnchor a, Vector2 pos, Vector2 sz)
+        {
+            var t = UIKit.Label(page, s, size, c, a);
+            UIKit.Place((RectTransform)t.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), pos, sz);
+            return t;
+        }
+
+        void Rebuild()
+        {
+            if (page != null) Destroy(page.gameObject);
+            page = UIKit.Box(root.transform, "Page", UIKit.Panel, true).rectTransform;
+            UIKit.Place(page, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1300f, 860f));
+            Txt(shop != null ? shop.merchantName.ToUpperInvariant() : "MERCHANT", 34, UIKit.Gold, TextAnchor.UpperLeft, new Vector2(36f, -24f), new Vector2(700f, 50f));
+            Txt("Gold: " + RunState.Gold, 28, new Color(1f, 0.85f, 0.35f), TextAnchor.UpperRight, new Vector2(700f, -28f), new Vector2(560f, 44f));
+            var buy = UIKit.Button(page, "BUY", () => { selling = false; Rebuild(); }, 22);
+            UIKit.Place((RectTransform)buy.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(36f, -86f), new Vector2(180f, 50f));
+            var sell = UIKit.Button(page, "SELL", () => { selling = true; Rebuild(); }, 22);
+            UIKit.Place((RectTransform)sell.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(230f, -86f), new Vector2(180f, 50f));
+            Tint(selling ? sell : buy, new Color(0.55f, 0.42f, 0.22f));
+            var close = UIKit.Button(page, "LEAVE  (Esc)", Close, 20);
+            UIKit.Place((RectTransform)close.transform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-36f, -86f), new Vector2(200f, 50f));
+
+            float y = -160f;
+            if (!selling && shop != null)
+            {
+                foreach (var id in shop.stock)
+                {
+                    var d = FVLibrary.Item(id);
+                    if (d == null) continue;
+                    int left = shop.Left(d);
+                    Row(d, d.price, left > 0 ? "Buy  (" + left + " left)" : "Sold out", () =>
+                    {
+                        if (shop.Left(d) <= 0) { PrototypeHUD.Message("Sold out", 1.2f); return; }
+                        if (RunState.Gold < d.price) { PrototypeHUD.Message("Not enough gold", 1.2f); GameAudio.PlayUI("ui_click", 0.5f); return; }
+                        RunState.AddGold(-d.price);
+                        Inventory.Add(d.id);
+                        shop.RecordSale(d.id);
+                        GameAudio.PlayUI("pickup_gear", 0.7f);
+                        Rebuild();
+                    }, ref y, RunState.Gold >= d.price && left > 0);
+                }
+            }
+            else
+            {
+                if (RunState.Items.Count == 0) Txt("Your bag is empty.", 24, UIKit.Dim, TextAnchor.UpperLeft, new Vector2(40f, y), new Vector2(800f, 40f));
+                foreach (var s in RunState.Items.ToArray())
+                {
+                    var d = FVLibrary.Item(s.id);
+                    if (d == null) continue;
+                    int value = Mathf.Max(1, Mathf.RoundToInt(d.price * 0.4f));
+                    Row(d, value, "Sell (x" + s.count + ")", () =>
+                    {
+                        if (Inventory.Remove(d.id)) { RunState.AddGold(value); GameAudio.Play("pickup", Vector3.zero, 0.3f, 0.1f, 1.5f); }
+                        Rebuild();
+                    }, ref y, true);
+                }
+            }
+        }
+
+        void Row(ItemDef d, int price, string action, System.Action onClick, ref float y, bool affordable)
+        {
+            if (y < -800f) return;
+            var row = UIKit.Box(page, "Row", new Color(1f, 1f, 1f, 0.05f)).rectTransform;
+            UIKit.Place(row, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(36f, y), new Vector2(1228f, 66f));
+            var sw = UIKit.Box(page, "Swatch", d.color).rectTransform;
+            UIKit.AddIcon(sw, d);
+            UIKit.Place(sw, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(48f, y - 10f), new Vector2(46f, 46f));
+            Txt(d.name, 24, UIKit.Ink, TextAnchor.UpperLeft, new Vector2(110f, y - 6f), new Vector2(560f, 32f));
+            Txt(d.Describe() + (d.tier > 1 ? "   tier " + d.tier : ""), 17, UIKit.Dim, TextAnchor.UpperLeft, new Vector2(110f, y - 38f), new Vector2(700f, 26f));
+            Txt(price + " gold", 22, affordable ? new Color(1f, 0.85f, 0.35f) : new Color(0.7f, 0.35f, 0.3f), TextAnchor.MiddleRight, new Vector2(820f, y - 16f), new Vector2(200f, 34f));
+            var b = UIKit.Button(page, action, onClick, 20);
+            UIKit.Place((RectTransform)b.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(1050f, y - 8f), new Vector2(200f, 50f));
+            b.interactable = affordable;
+            y -= 74f;
+        }
+    }
+}
