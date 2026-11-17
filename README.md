@@ -2,7 +2,7 @@
 
 *A knight without a name. A dungeon without mercy. A vow to remember.*
 
-**[▶ Play in your browser]([https://YOUR-GITHUB-USERNAME.github.io/fractured-vow/](https://lonelythic.github.io/Fractured-Vow/))**  ·  Chrome, Edge or Firefox on a computer
+**[▶ Play in your browser](https://lonelythic.github.io/Fractured-Vow/)**  ·  Chrome, Edge or Firefox on a computer
 
 Fractured Vow is a third-person action roguelite. You wake in a cell beneath a ruined keep with no memory of who you are. Fight your way through two floors of traps, husks and necromancers, recover the fragments of your past, and face the Warden of the Pit and the Leviathan of the Drowned Deep.
 
