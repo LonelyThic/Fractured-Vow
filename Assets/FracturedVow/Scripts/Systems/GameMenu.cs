@@ -460,6 +460,7 @@ namespace FracturedVow
             RenderSettings.ambientSkyColor = baseSky * amb;
             RenderSettings.ambientEquatorColor = baseEquator * amb;
             RenderSettings.ambientGroundColor = baseGround * amb;
+            AmbientFix.Rebuild();
 
             foreach (var input in FindObjectsByType<PlayerInputHandler>(FindObjectsSortMode.None))
             {

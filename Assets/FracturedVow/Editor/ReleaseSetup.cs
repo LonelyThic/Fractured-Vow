@@ -64,6 +64,41 @@ namespace FracturedVow.EditorTools
         }
 
         /// <summary>
+        /// The web build uses its own default quality level, which in a URP project is usually the "Mobile" one
+        /// with most torch lights switched off. This gives the web build the same level the desktop build uses.
+        /// </summary>
+        static void MatchWebQualityToDesktop()
+        {
+            var assets = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/QualitySettings.asset");
+            if (assets == null || assets.Length == 0) return;
+            var so = new SerializedObject(assets[0]);
+            var map = so.FindProperty("m_PerPlatformDefaultQuality");
+            var levels = so.FindProperty("m_QualitySettings");
+            if (map == null || levels == null) return;
+
+            int desktop = -1;
+            SerializedProperty web = null;
+            for (int i = 0; i < map.arraySize; i++)
+            {
+                var pair = map.GetArrayElementAtIndex(i);
+                string platform = pair.FindPropertyRelative("first").stringValue;
+                if (platform == "Standalone") desktop = pair.FindPropertyRelative("second").intValue;
+                if (platform == "WebGL") web = pair.FindPropertyRelative("second");
+            }
+            if (desktop < 0 || desktop >= levels.arraySize) return;
+            if (web != null) web.intValue = desktop;
+
+            // the desktop level may be switched off for the web; switch it on
+            var excluded = levels.GetArrayElementAtIndex(desktop).FindPropertyRelative("excludedTargetPlatforms");
+            if (excluded != null)
+                for (int i = excluded.arraySize - 1; i >= 0; i--)
+                    if (excluded.GetArrayElementAtIndex(i).stringValue == "WebGL") excluded.DeleteArrayElementAtIndex(i);
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>
         /// Tools > Fractured Vow > Build Web Demo (WebGL)
         /// Builds the browser version for GitHub Pages: product name and icon (Prepare Release Build), Gzip
         /// compression with decompression fallback (GitHub Pages can't send the headers compressed files need),
@@ -88,6 +123,7 @@ namespace FracturedVow.EditorTools
                 return;
 
             Prepare(false); // name, version, icon, scenes in order
+            MatchWebQualityToDesktop();
             PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
             PlayerSettings.WebGL.decompressionFallback = true;   // GitHub Pages: the page unpacks the files itself
             PlayerSettings.WebGL.dataCaching = true;             // the second visit loads almost instantly
