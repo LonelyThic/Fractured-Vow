@@ -238,28 +238,8 @@ namespace FracturedVow
 
         IEnumerator HitRoutine(int index, bool heavy)
         {
-            // the light trail follows the sword itself, from just before the hit frame until the blade has passed
-            float delay = heavy ? hitDelay * 1.8f : hitDelay;
-            float lead = delay * 0.55f;
-            yield return new WaitForSeconds(delay - lead);
-            bool onBlade = false;
-            if (showSlashEffect && (health == null || !health.IsDead))
-            {
-                bool finisher = heavy || index == comboDamage.Length - 1;
-                onBlade = WeaponTrail.Swing(transform, lead + (finisher ? 0.24f : 0.16f),
-                                            finisher ? new Color(1f, 0.88f, 0.55f) : Color.white);
-            }
-            yield return new WaitForSeconds(lead);
+            yield return new WaitForSeconds(heavy ? hitDelay * 1.8f : hitDelay);
             if (health != null && health.IsDead) yield break;
-
-            // no sword in hand: the plain arc appears on the hit frame, at the angle set for this swing in the Inspector
-            if (showSlashEffect && !onBlade)
-            {
-                float angle = index == 0 ? firstSlashAngle
-                            : index == 1 ? secondSlashAngle
-                            : thirdSlashAngle;
-                SlashEffect.Spawn(transform, index, slashMaterial, angle);
-            }
 
             hitThisSwing.Clear();
             Vector3 center = transform.position + Vector3.up + transform.forward * attackRange;
