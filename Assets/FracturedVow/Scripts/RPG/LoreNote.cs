@@ -147,8 +147,7 @@ namespace FracturedVow
 
             if (paperMat == null)
             {
-                var sh = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
-                paperMat = new Material(sh);
+                paperMat = new Material(RuntimeVisuals.Lit);
                 paperMat.SetColor("_BaseColor", new Color(0.86f, 0.78f, 0.6f));
                 paperMat.EnableKeyword("_EMISSION");
                 paperMat.SetColor("_EmissionColor", new Color(0.35f, 0.28f, 0.14f));

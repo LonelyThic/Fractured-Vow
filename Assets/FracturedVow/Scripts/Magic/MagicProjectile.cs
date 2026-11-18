@@ -37,6 +37,7 @@ namespace FracturedVow
                 else if (impactPrefab == null) impactPrefab = lib.frostImpact;
             }
             var go = RuntimeVisuals.Primitive(PrimitiveType.Sphere, template, Color.Lerp(color, Color.white, 0.35f), false);
+            RuntimeVisuals.Emit(go, Color.Lerp(color, Color.white, 0.35f), 2f);
             go.name = "Spell_" + (frost ? "Frost" : "Fire");
             go.transform.SetPositionAndRotation(pos, Quaternion.LookRotation(dir));
             go.transform.localScale = frost ? new Vector3(size * 0.7f, size * 0.7f, size * 1.8f) : Vector3.one * size;
@@ -46,6 +47,8 @@ namespace FracturedVow
             shell.name = "Glow";
             shell.transform.SetParent(go.transform, false);
             shell.transform.localScale = Vector3.one * 1.6f;
+            // the solid shell would hide the bright core: a soft particle glow surrounds it instead
+            shell.GetComponent<Renderer>().enabled = false;
 
             var light = go.AddComponent<Light>();
             light.type = LightType.Point;

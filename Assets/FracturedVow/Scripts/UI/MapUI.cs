@@ -30,15 +30,17 @@ namespace FracturedVow
         Transform player;
         RectTransform root, mini, miniView, full, fullView;
         RawImage miniImg, fullImg;
-        Text arrowMini, arrowFull, status;
+        Image arrowMini, arrowFull;
+        Text status;
         float nextReveal, nextMarkers, nextApply;
+        int markerCount = -1; // companions on the map: a newly hired one shows up straight away
 
         class Marker
         {
             public Transform t;
             public string glyph;
             public Color color;
-            public Text mini, full;
+            public Graphic mini, full;
             public System.Func<bool> show;
         }
         readonly List<Marker> markers = new List<Marker>();
@@ -218,21 +220,86 @@ namespace FracturedVow
             var legend = UIKit.Label(full, "", 20, UIKit.Ink, TextAnchor.MiddleCenter);
             UIKit.Place((RectTransform)legend.transform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 26f), new Vector2(1700f, 34f));
             legend.supportRichText = true;
-            legend.text = "<color=#ffffff>▲ You</color>     <color=#ffd25e>EXIT</color>     <color=#8fd3ff>● Checkpoint</color>     <color=#ffd25e>$ Merchant</color>     " +
-                          "<color=#8dff9a>+ Sellsword</color>     <color=#ff6a5a>B Boss</color>     <color=#ffae5e>■ Chest</color>     <color=#5fe3ff>~ Boat</color>     <color=#f2d99a>? Note</color>     " +
-                          "Bright = explored     " + InputBindings.Name(GameAction.Map) + " to close";
+            // (the web build's font has no arrow or dot characters, so the shapes are named instead)
+            legend.text = "<color=#ffd25e>Gold arrow: You</color>     <color=#8dff9a>Green dot: Companion</color>     <color=#7fd0ff>Blue diamond: Checkpoint</color>     " +
+                          "<color=#ffd25e>$ Merchant</color>     <color=#8dff9a>+ Sellsword for hire</color>     <color=#e8e2ff>White dot: Person</color>     <color=#ff6a5a>B Boss</color>     " +
+                          "<color=#ffae5e>Orange square: Chest</color>     <color=#5fe3ff>~ Boat</color>     <color=#f2d99a>? Note</color>     <color=#ffd25e>EXIT</color>     " +
+                          InputBindings.Name(GameAction.Map) + " to close";
             status = UIKit.Label(fullView, "Surveying the floor...", 26, UIKit.Dim, TextAnchor.MiddleCenter);
             UIKit.Stretch((RectTransform)status.transform);
             full.gameObject.SetActive(false);
         }
 
-        static Text Arrow(Transform parent, int size)
+                /// <summary>The knight: a gold arrow with a dark rim, pointing where he faces.</summary>
+        static Image Arrow(Transform parent, int size)
         {
-            var t = UIKit.Label(parent, "▲", size, Color.white, TextAnchor.MiddleCenter);
-            UIKit.Place((RectTransform)t.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(size * 1.4f, size * 1.4f));
-            var o = t.gameObject.AddComponent<Outline>();
-            o.effectColor = new Color(0f, 0f, 0f, 0.9f);
-            return t;
+            var img = Icon(parent, "arrow", new Color(1f, 0.84f, 0.35f), size);
+            img.gameObject.name = "You";
+            return img;
+        }
+
+        // ---------------- drawn icons ----------------
+
+        static readonly Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
+
+        /// <summary>A small icon image (arrow, dot, diamond, square), drawn once in code: white with a black rim, tinted.</summary>
+        static Image Icon(Transform parent, string shape, Color color, float size)
+        {
+            var img = UIKit.Rect(shape, parent).gameObject.AddComponent<Image>();
+            img.sprite = MakeSprite(shape);
+            img.color = color;
+            img.raycastTarget = false;
+            UIKit.Place(img.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(size, size));
+            return img;
+        }
+
+        static Sprite MakeSprite(string shape)
+        {
+            if (sprites.TryGetValue(shape, out var s) && s != null) return s;
+            const int N = 64;
+            var t = new Texture2D(N, N, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[N * N];
+            for (int y = 0; y < N; y++)
+                for (int x = 0; x < N; x++)
+                {
+                    // signed distance (in pixels) to the shape's edge: negative inside
+                    float u = (x + 0.5f) / N * 2f - 1f, v = (y + 0.5f) / N * 2f - 1f, d;
+                    switch (shape)
+                    {
+                        case "arrow": d = ArrowDist(u, v); break;
+                        case "diamond": d = (Mathf.Abs(u) + Mathf.Abs(v)) * 0.7071f - 0.62f; break;
+                        case "square": d = Mathf.Max(Mathf.Abs(u), Mathf.Abs(v)) - 0.62f; break;
+                        default: d = Mathf.Sqrt(u * u + v * v) - 0.68f; break; // dot
+                    }
+                    d *= N / 2f;
+                    const float rim = 5f;
+                    float fill = Mathf.Clamp01(0.5f - d - rim);      // the tinted middle
+                    float all = Mathf.Clamp01(0.5f - d);             // middle plus its black rim
+                    byte g = (byte)(255f * fill);
+                    px[y * N + x] = new Color32(g, g, g, (byte)(255f * all));
+                }
+            t.SetPixels32(px);
+            t.Apply();
+            s = UnityEngine.Sprite.Create(t, new Rect(0, 0, N, N), new Vector2(0.5f, 0.5f), 100f);
+            sprites[shape] = s;
+            return s;
+        }
+
+        /// <summary>Distance to an arrowhead pointing up (+v), in the -1..1 square.</summary>
+        static float ArrowDist(float u, float v)
+        {
+            Vector2 p = new Vector2(u, v);
+            Vector2 a = new Vector2(0f, 0.85f), b = new Vector2(-0.7f, -0.75f), c = new Vector2(0.7f, -0.75f), n = new Vector2(0f, -0.45f);
+            // outside the two long sides, or below both halves of the notched base
+            return Mathf.Max(Mathf.Max(Edge(p, a, b), Edge(p, c, a)), Mathf.Min(Edge(p, b, n), Edge(p, n, c)));
+        }
+
+        /// <summary>Signed distance from p to the line a-b (positive outside a counter-clockwise outline).</summary>
+        static float Edge(Vector2 p, Vector2 a, Vector2 b)
+        {
+            Vector2 e = b - a;
+            Vector2 nrm = new Vector2(e.y, -e.x).normalized;
+            return Vector2.Dot(p - a, nrm);
         }
 
         /// <summary>Sizes the full map to the level's shape (north is up).</summary>
@@ -256,22 +323,31 @@ namespace FracturedVow
                 markers.Add(new Marker { t = c.transform, glyph = glyph, color = color, show = show });
             }
             foreach (var e in FindObjectsByType<FloorExit>(FindObjectsSortMode.None)) Add(e, "EXIT", new Color(1f, 0.82f, 0.37f));
-            foreach (var c in FindObjectsByType<Checkpoint>(FindObjectsSortMode.None)) Add(c, "●", new Color(0.56f, 0.83f, 1f));
+            foreach (var c in FindObjectsByType<Checkpoint>(FindObjectsSortMode.None)) Add(c, "diamond", new Color(0.5f, 0.82f, 1f));
             foreach (var s in FindObjectsByType<ShopNPC>(FindObjectsSortMode.None)) Add(s, "$", new Color(1f, 0.82f, 0.37f));
             foreach (var m in FindObjectsByType<MercenaryPost>(FindObjectsSortMode.None)) { var mm = m; Add(m, "+", new Color(0.55f, 1f, 0.6f), () => mm != null && mm.isActiveAndEnabled); }
             foreach (var b in FindObjectsByType<WardenBoss>(FindObjectsSortMode.None)) { var h = b.GetComponent<Health>(); Add(b, "B", new Color(1f, 0.42f, 0.35f), () => h == null || !h.IsDead); }
             foreach (var b in FindObjectsByType<LeviathanBoss>(FindObjectsSortMode.None)) { var h = b.GetComponent<Health>(); Add(b, "B", new Color(1f, 0.42f, 0.35f), () => h == null || !h.IsDead); }
-            foreach (var c in FindObjectsByType<Chest>(FindObjectsSortMode.None)) { var cc = c; Add(c, "■", new Color(1f, 0.68f, 0.37f), () => cc != null && !cc.Opened); }
+            foreach (var c in FindObjectsByType<Chest>(FindObjectsSortMode.None)) { var cc = c; Add(c, "square", new Color(1f, 0.68f, 0.37f), () => cc != null && !cc.Opened); }
             foreach (var b in FindObjectsByType<BoatController>(FindObjectsSortMode.None)) Add(b, "~", new Color(0.37f, 0.89f, 1f));
             foreach (var n in FindObjectsByType<LoreNote>(FindObjectsSortMode.None)) Add(n, "?", new Color(0.95f, 0.85f, 0.6f));
-            foreach (var c in CompanionAI.All) if (c != null) Add(c, "•", new Color(0.55f, 1f, 0.6f));
+            foreach (var n in FindObjectsByType<DialogueNPC>(FindObjectsSortMode.None)) Add(n, "dot", new Color(0.91f, 0.89f, 1f));
+            foreach (var c in CompanionAI.All) if (c != null) Add(c, "dot", new Color(0.55f, 1f, 0.6f));
             foreach (var m in markers)
             {
+
+                bool shape = m.glyph == "dot" || m.glyph == "diamond" || m.glyph == "square";
+                if (shape)
+                {
+                    m.mini = Icon(miniView, m.glyph, m.color, 15f);
+                    m.full = Icon(fullView, m.glyph, m.color, 20f);
+                    continue;
+                }
                 bool big = m.glyph.Length > 1;
                 m.mini = UIKit.Label(miniView, m.glyph, big ? 13 : 20, m.color, TextAnchor.MiddleCenter);
-                UIKit.Place((RectTransform)m.mini.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(46f, 24f));
+                UIKit.Place(m.mini.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(46f, 24f));
                 m.full = UIKit.Label(fullView, m.glyph, big ? 18 : 26, m.color, TextAnchor.MiddleCenter);
-                UIKit.Place((RectTransform)m.full.transform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(60f, 32f));
+                UIKit.Place(m.full.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(60f, 32f));
                 foreach (var t in new[] { m.mini, m.full }) { var o = t.gameObject.AddComponent<Outline>(); o.effectColor = new Color(0f, 0f, 0f, 0.9f); }
             }
             arrowMini.transform.SetAsLastSibling();
@@ -292,7 +368,7 @@ namespace FracturedVow
 
             if (Time.time >= nextReveal) { nextReveal = Time.time + 0.25f; Reveal(); }
             if (dirty && Time.unscaledTime >= nextApply) { nextApply = Time.unscaledTime + 0.4f; tex.SetPixels32(pixels); tex.Apply(); dirty = false; }
-            if (Time.time >= nextMarkers) { nextMarkers = Time.time + 15f; FindMarkers(); }
+            if (Time.time >= nextMarkers || markerCount != CompanionAI.All.Count) { nextMarkers = Time.time + 15f; markerCount = CompanionAI.All.Count; FindMarkers(); }
 
             Vector3 p = player.position;
             float yaw = player.eulerAngles.y;

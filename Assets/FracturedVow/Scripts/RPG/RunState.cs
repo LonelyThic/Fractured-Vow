@@ -82,6 +82,8 @@ namespace FracturedVow
         public static readonly List<string> Notes = new List<string>();
         /// <summary>What each merchant has sold this run ("scene|merchant|item", count), for their limited stock.</summary>
         public static readonly List<ItemStack> ShopBought = new List<ItemStack>();
+        /// <summary>How many times each piece of gear has been upgraded at a merchant (item id, level).</summary>
+        public static readonly List<ItemStack> Upgrades = new List<ItemStack>();
 
         public static string StarterSword()
         {

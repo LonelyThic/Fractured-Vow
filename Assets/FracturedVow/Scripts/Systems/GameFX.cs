@@ -35,6 +35,48 @@ namespace FracturedVow
             Fire(ps, count);
         }
 
+                /// <summary>A quick soft flash of light where something is struck (one bright glow that pops and fades).</summary>
+        public static void Flash(Vector3 pos, Color color, float size = 0.8f)
+        {
+            var ps = Make("FX Flash", pos, true);
+            if (ps == null) return;
+            var main = ps.main;
+            main.startLifetime = 0.14f;
+            main.startSpeed = 0f;
+            main.startSize = size;
+            main.startColor = color;
+            var sh = ps.shape; sh.enabled = false;
+            var col = ps.colorOverLifetime; col.enabled = true; col.color = FadeOut();
+            var sz = ps.sizeOverLifetime; sz.enabled = true; sz.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.EaseInOut(0f, 0.5f, 1f, 1.3f));
+            Fire(ps, 1);
+        }
+
+        /// <summary>
+        /// A sword striking: a white flash with a short bright streak across it, and a few hot sparks.
+        /// 'across' is the swing direction (the streak lies along it).
+        /// </summary>
+        public static void SwordHit(Vector3 pos, Vector3 across, Color sparks)
+        {
+            Flash(pos, new Color(1f, 1f, 1f, 0.9f), 0.9f);
+            var ps = Make("FX Hit Streak", pos, true);
+            if (ps != null)
+            {
+                var main = ps.main;
+                main.startLifetime = 0.12f;
+                main.startSpeed = new ParticleSystem.MinMaxCurve(9f, 12f);
+                main.startSize = new ParticleSystem.MinMaxCurve(0.07f, 0.1f);
+                main.startColor = Color.white;
+                var sh = ps.shape; sh.shapeType = ParticleSystemShapeType.Cone; sh.angle = 4f; sh.radius = 0.01f;
+                ps.transform.rotation = Quaternion.LookRotation(across.sqrMagnitude > 0.001f ? across : Vector3.right);
+                var col = ps.colorOverLifetime; col.enabled = true; col.color = FadeOut();
+                var r = ps.GetComponent<ParticleSystemRenderer>();
+                r.renderMode = ParticleSystemRenderMode.Stretch; r.velocityScale = 0.09f; r.lengthScale = 2f;
+                ps.transform.position = pos - ps.transform.forward * 0.6f;
+                Fire(ps, 2);
+            }
+            Sparks(pos, sparks, 8);
+        }
+
         public static void Dust(Vector3 pos, float radius = 0.8f, int count = 24)
         {
             var ps = Make("FX Dust", pos, false);
@@ -122,14 +164,14 @@ namespace FracturedVow
             var puff = Make("FX Puff", pos, !frost);
             if (puff == null) return;
             var pm = puff.main;
-            pm.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.9f);
-            pm.startSpeed = new ParticleSystem.MinMaxCurve(0.5f, 1.5f);
-            pm.startSize = new ParticleSystem.MinMaxCurve(0.6f, 1.2f);
-            pm.startColor = frost ? new Color(0.8f, 0.95f, 1f, 0.5f) : new Color(color.r, color.g * 0.6f, color.b * 0.4f, 0.6f);
+            pm.startLifetime = new ParticleSystem.MinMaxCurve(0.35f, 0.6f);
+            pm.startSpeed = new ParticleSystem.MinMaxCurve(0.4f, 1.1f);
+            pm.startSize = new ParticleSystem.MinMaxCurve(0.35f, 0.7f);
+            pm.startColor = frost ? new Color(0.7f, 0.9f, 1f, 0.22f) : new Color(color.r, color.g * 0.6f, color.b * 0.4f, 0.35f);
             var psh = puff.shape; psh.shapeType = ParticleSystemShapeType.Sphere; psh.radius = 0.3f;
             var pc = puff.colorOverLifetime; pc.enabled = true; pc.color = FadeOut();
             var ps2 = puff.sizeOverLifetime; ps2.enabled = true; ps2.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 0.6f, 1f, 1.6f));
-            Fire(puff, 10);
+            Fire(puff, 5);
         }
 
         static ParticleSystem.MinMaxGradient FadeOut()

@@ -231,16 +231,16 @@ namespace FracturedVow
             {
                 Play("block_clang", p, 0.9f);
                 GameFX.Sparks(p + r.target.transform.forward * 0.5f, new Color(1f, 0.85f, 0.4f), 18);
-                var libB = FVLibrary.Get;
-                if (libB != null && libB.hitMetal != null) MagicProjectile.PlayEffect(libB.hitMetal, p + r.target.transform.forward * 0.5f, 0.6f);
+                GameFX.Flash(p + r.target.transform.forward * 0.5f, new Color(1f, 0.9f, 0.6f, 0.8f), 0.7f);
                 return;
             }
             Play("sword_hit", p, isPlayer ? 0.7f : 1f);
             if (isPlayer) PlayUI("player_hurt", 0.8f);
             else if (r.target.GetComponent<EnemyAI>() != null && r.after > 0f) Play("enemy_hurt", p, 0.8f);
-            GameFX.Sparks(p, isPlayer ? new Color(1f, 0.3f, 0.2f) : new Color(1f, 0.75f, 0.35f), 12);
-            var lib = FVLibrary.Get;
-            if (lib != null && lib.hitFlesh != null && r.final >= 1f) MagicProjectile.PlayEffect(lib.hitFlesh, p, 0.5f);
+            // a white flash and streak with a few sparks (the Particle Pack's blood and smoke burst didn't suit the style)
+            Vector3 across = r.attacker != null ? Vector3.Cross(Vector3.up, (r.target.transform.position - r.attacker.transform.position).normalized) : Vector3.right;
+            if (isPlayer) GameFX.Sparks(p, new Color(1f, 0.3f, 0.2f), 10);
+            else if (r.final >= 1f) GameFX.SwordHit(p, across, new Color(1f, 0.75f, 0.35f));
         }
 
         void OnDied(Health h)

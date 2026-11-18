@@ -297,6 +297,7 @@ namespace FracturedVow
                 block.transform.SetPositionAndRotation(c.position, c.rotation);
                 block.transform.localScale = c.lossyScale;
                 if (r != null) block.GetComponent<Renderer>().sharedMaterial = r.sharedMaterial;
+                else RuntimeVisuals.FixMaterial(block, new Color(0.4f, 0.38f, 0.35f));
                 c.gameObject.SetActive(false);
                 var rb = block.AddComponent<Rigidbody>();
                 rb.mass = 40f;

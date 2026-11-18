@@ -100,10 +100,10 @@ namespace FracturedVow
             var s = Save;
             var w = s != null && !string.IsNullOrEmpty(s.weapon) ? FVLibrary.Item(s.weapon) : null;
             var a = s != null && !string.IsNullOrEmpty(s.armor) ? FVLibrary.Item(s.armor) : null;
-            WeaponBonus = w != null ? w.damage : 0f;
-            armorHealth = a != null ? a.health : 0f;
+            WeaponBonus = w != null ? w.damage * Inventory.UpgradeMult(w.id) : 0f;
+            armorHealth = a != null ? a.health * Inventory.UpgradeMult(a.id) : 0f;
             Health.maxHealth = MaxHealthNow;
-            Health.armor = Mathf.Min(0.6f, 0.1f + (a != null ? a.armor : 0f)); // sellswords wear a little armor of their own
+            Health.armor = Mathf.Min(0.6f, 0.1f + (a != null ? a.armor * Inventory.UpgradeMult(a.id) : 0f)); // sellswords wear a little armor of their own
             if (s != null && s.dead) Health.Kill(); else Health.Heal(99999f);
             scaledLevel = RunState.Level;
             CharacterVisuals.HoldWeapon(transform, w != null ? w.model : null, 1f);
@@ -125,15 +125,17 @@ namespace FracturedVow
             bool playerOnFoot = playerCtrl == null || playerCtrl.ControlEnabled;
 
             KeepScaled(dt);
+            bool cutscene = CutsceneDirector.Playing; // they wait with the knight while a cutscene plays
             if (UpdateBoat()) return;                    // riding in the boat with the knight
             if (transform.position.y < player.position.y - 8f && playerOnFoot) { Warp(); return; } // fell into the water
-            if (Health.Normalized < 0.35f && draughts > 0 && !attacking) { DrinkDraught(); return; }
+            if (Health.Normalized < 0.35f && draughts > 0 && !attacking && !cutscene) { DrinkDraught(); return; }
 
             // keep up with the knight (after boat rides, teleports, falls)
-            if (playerOnFoot && (player.position - transform.position).sqrMagnitude > 22f * 22f) { Warp(); return; }
+            if (playerOnFoot && !cutscene && (player.position - transform.position).sqrMagnitude > 22f * 22f) { Warp(); return; }
             RecordTrail(playerOnFoot);
 
-            if (Time.time >= nextThink) { nextThink = Time.time + 0.4f; target = Time.time < ignoreTargetsUntil ? null : PickTarget(); }
+            if (cutscene) { target = null; nextThink = Time.time + 0.5f; }
+            else if (Time.time >= nextThink) { nextThink = Time.time + 0.4f; target = Time.time < ignoreTargetsUntil ? null : PickTarget(); }
             if (target != null && !attacking && Time.time >= nextCast && CanCastAt(target)) { StartCoroutine(Cast(target)); return; }
 
             Vector3 goal = transform.position;
@@ -149,7 +151,7 @@ namespace FracturedVow
                     if (Time.time >= nextAttack) StartCoroutine(Attack(target));
                 }
             }
-            else if (!attacking && playerOnFoot)
+            else if (!attacking && playerOnFoot && !cutscene)
             {
                 Vector3 side = Vector3.Cross(Vector3.up, player.forward) * (saveIndex == 0 ? 1.4f : -1.4f);
                 Vector3 follow = player.position - player.forward * 1.8f + side;
@@ -159,7 +161,7 @@ namespace FracturedVow
                 if (to.magnitude > 1.2f && !holdOn) { goal = Route(follow); speed = to.magnitude > 6f ? moveSpeed * 1.3f : moveSpeed; }
                 else if (holdOn) Face(player.position); // can't reach the spot beside him: wait here, facing him
             }
-            CheckStuck(speed > 0f, playerOnFoot);
+            if (!cutscene) CheckStuck(speed > 0f, playerOnFoot);
 
             Vector3 dir = goal - transform.position; dir.y = 0f;
             Vector3 motion = dir.sqrMagnitude > 0.01f ? dir.normalized * speed : Vector3.zero;

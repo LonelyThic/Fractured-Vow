@@ -43,6 +43,7 @@ namespace FracturedVow
             public List<CompanionSave> companions = new List<CompanionSave>();
             public List<string> notes = new List<string>();
             public List<ItemStack> shopBought = new List<ItemStack>();
+            public List<ItemStack> upgrades = new List<ItemStack>();
         }
 
         /// <summary>True if any slot holds a run (for Continue).</summary>
@@ -148,6 +149,7 @@ namespace FracturedVow
                 items = new List<ItemStack>(RunState.Items), companions = new List<CompanionSave>(RunState.Companions),
                 notes = new List<string>(RunState.Notes),
                 shopBought = new List<ItemStack>(RunState.ShopBought),
+                upgrades = new List<ItemStack>(RunState.Upgrades),
             };
         }
 
@@ -180,6 +182,8 @@ namespace FracturedVow
             if (s.notes != null) RunState.Notes.AddRange(s.notes);
             RunState.ShopBought.Clear();
             if (s.shopBought != null) foreach (var b in s.shopBought) RunState.ShopBought.Add(new ItemStack { id = b.id, count = b.count });
+            RunState.Upgrades.Clear();
+            if (s.upgrades != null) foreach (var u in s.upgrades) RunState.Upgrades.Add(new ItemStack { id = u.id, count = u.count });
             RunState.Notify();
         }
 

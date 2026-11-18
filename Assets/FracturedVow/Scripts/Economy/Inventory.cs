@@ -75,8 +75,49 @@ namespace FracturedVow
             {
                 var d = string.IsNullOrEmpty(id) ? null : FVLibrary.Item(id);
                 if (d == null) continue;
-                damage += d.damage; armor += d.armor; health += d.health; mana += d.mana;
+                float m = UpgradeMult(id);
+                damage += d.damage * m; armor += d.armor * m; health += d.health * m; mana += d.mana * m;
             }
+        }
+                // ---------------- upgrades (bought at a merchant) ----------------
+
+        public const int MaxUpgrade = 5;
+
+        /// <summary>How many times this piece of gear has been upgraded (0 to MaxUpgrade).</summary>
+        public static int UpgradeLevel(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return 0;
+            foreach (var u in RunState.Upgrades) if (u.id == id) return u.count;
+            return 0;
+        }
+
+        /// <summary>Each upgrade adds 25% of the item's base bonuses.</summary>
+        public static float UpgradeMult(string id) => 1f + 0.25f * UpgradeLevel(id);
+
+        /// <summary>Gold for the next upgrade: half the item's price, then more for each level after.</summary>
+        public static int UpgradeCost(ItemDef d)
+        {
+            int lvl = UpgradeLevel(d.id);
+            return Mathf.RoundToInt(Mathf.Max(40, d.price) * 0.5f * (lvl + 1));
+        }
+
+        public static bool Owns(string id) =>
+            Count(id) > 0 || id == RunState.EquippedWeapon || id == RunState.EquippedArmor || id == RunState.EquippedTrinket;
+
+        /// <summary>Pays gold to raise a piece of gear one level. Returns false if it can't.</summary>
+        public static bool Upgrade(string id)
+        {
+            var d = FVLibrary.Item(id);
+            if (d == null || !d.IsGear || UpgradeLevel(id) >= MaxUpgrade) return false;
+            int cost = UpgradeCost(d);
+            if (RunState.Gold < cost) return false;
+            RunState.AddGold(-cost);
+            var u = RunState.Upgrades.Find(x => x.id == id);
+            if (u == null) RunState.Upgrades.Add(new ItemStack { id = id, count = 1 });
+            else u.count++;
+            PrototypeHUD.Message(d.name + " upgraded to +" + UpgradeLevel(id), 1.8f);
+            Refresh();
+            return true;
         }
 
         /// <summary>Uses an item from the bag: flasks heal, tomes teach spells, gear gets equipped.</summary>

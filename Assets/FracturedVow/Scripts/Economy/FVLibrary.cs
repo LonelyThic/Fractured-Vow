@@ -34,12 +34,19 @@ namespace FracturedVow
                 case ItemKind.ManaFlask: return "Restores " + PlayerFlask.ManaRestore + " mana (V).";
                 case ItemKind.SpellTome: return "Teaches or upgrades " + Spell.Create(spell).displayName + ".";
             }
+                        return DescribeAt(Inventory.UpgradeLevel(id));
+        }
+
+        /// <summary>The gear's bonuses at an upgrade level (each level adds 25% of the base).</summary>
+        public string DescribeAt(int upgrade)
+        {
+            float m = 1f + 0.25f * upgrade;
             var parts = new List<string>();
-            if (damage > 0f) parts.Add("+" + Mathf.RoundToInt(damage * 100f) + "% damage");
-            if (armor > 0f) parts.Add("+" + Mathf.RoundToInt(armor * 100f) + "% armor");
-            if (health > 0f) parts.Add("+" + Mathf.RoundToInt(health) + " health");
-            if (mana > 0f) parts.Add("+" + Mathf.RoundToInt(mana) + " mana");
-            return string.Join(", ", parts);
+            if (damage > 0f) parts.Add("+" + Mathf.RoundToInt(damage * m * 100f) + "% damage");
+            if (armor > 0f) parts.Add("+" + Mathf.RoundToInt(armor * m * 100f) + "% armor");
+            if (health > 0f) parts.Add("+" + Mathf.RoundToInt(health * m) + " health");
+            if (mana > 0f) parts.Add("+" + Mathf.RoundToInt(mana * m) + " mana");
+            return string.Join(", ", parts) + (upgrade > 0 ? "   (upgraded +" + upgrade + ")" : "");
         }
     }
 

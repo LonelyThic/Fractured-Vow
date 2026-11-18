@@ -2,29 +2,15 @@ using UnityEngine;
 
 namespace FracturedVow
 {
-    public class ImpactFlash : MonoBehaviour
+    /// <summary>
+    /// The flash where a spell lands or is cast. It used to be a solid sphere, which read as a big white ball
+    /// in the built game; now it's a soft glow that pops and fades (GameFX.Flash).
+    /// </summary>
+    public static class ImpactFlash
     {
-        public float duration = 0.25f;
-        public float endScale = 1.5f;
-        float t;
-        Vector3 start;
-
-        void Start() { start = transform.localScale; }
-
-        void Update()
-        {
-            t += Time.deltaTime / duration;
-            transform.localScale = Vector3.Lerp(start, start * endScale, t);
-            if (t >= 1f) Destroy(gameObject);
-        }
-
         public static void Spawn(Vector3 pos, Color color, Material template, float size = 0.6f)
         {
-            var go = RuntimeVisuals.Primitive(PrimitiveType.Sphere, template, color, false);
-            go.name = "ImpactFlash";
-            go.transform.position = pos;
-            go.transform.localScale = Vector3.one * size;
-            go.AddComponent<ImpactFlash>();
+            GameFX.Flash(pos, Color.Lerp(color, Color.white, 0.25f), size * 1.3f);
         }
     }
 }
